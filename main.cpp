@@ -9,13 +9,15 @@ int h = size * M;
 
 int dir, num = 4;
 
-struct Snake
+class Snake
 {
+public:
     int x, y;
 }  s[100];
 
-struct Fruit
+class Fruit
 {
+public:
     int x, y;
 } f;
 
@@ -48,13 +50,20 @@ int main()
     srand(time(0));
 
     RenderWindow window(VideoMode(w, h), "Snake Game!");
+    window.setFramerateLimit(60);
 
-    Texture t1, t2;
-    t1.loadFromFile("images/4a752c.png");
-    t2.loadFromFile("images/blue_snake.png");
 
-    Sprite sprite1(t1);
-    Sprite sprite2(t2);
+    // background
+    Texture T_background;
+    T_background.loadFromFile("images/4a752c.png");
+        Sprite S_background(T_background);
+    // snake
+    Texture T_blue_head, T_blue;
+    T_blue_head.loadFromFile("images/blue_snake.png");
+        Sprite S_blue_head(T_blue_head);
+       // S_blue_head.setOrigin(S_blue_head.getLocalBounds().width, S_blue_head.getLocalBounds().height);
+    T_blue.loadFromFile("images/blue.png");
+        Sprite S_blue(T_blue);
 
     Clock clock;
     float timer = 0, delay = 0.1;
@@ -64,6 +73,23 @@ int main()
 
     while (window.isOpen())
     {
+
+        if (Keyboard::isKeyPressed(Keyboard::Escape))
+        {
+            num = 4;
+            for (int i = 0; i < num; ++i)
+            {
+                s[i].x = N / 2;
+                s[i].y = M / 2 + i;
+            }
+
+            f.x = rand() % N;
+            f.y = rand() % M;
+
+            dir = 0;
+        }
+
+
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
         timer += time;
@@ -75,10 +101,30 @@ int main()
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left)) dir = 1;
-        if (Keyboard::isKeyPressed(Keyboard::Right)) dir = 2;
-        if (Keyboard::isKeyPressed(Keyboard::Up)) dir = 3;
-        if (Keyboard::isKeyPressed(Keyboard::Down)) dir = 0;
+        if (Keyboard::isKeyPressed(Keyboard::Left))
+        {
+            dir = 1;
+            S_blue_head.setRotation(-90.f);
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::Right))
+        {
+            dir = 2;
+            S_blue_head.setRotation(90.f);
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::Up))
+        {
+            dir = 3;
+            S_blue_head.setRotation(0.f);
+        }
+
+        if (Keyboard::isKeyPressed(Keyboard::Down))
+        {
+            dir = 0;
+            S_blue_head.setRotation(180.f);
+        }
+
 
         if (timer > delay) { timer = 0; Tick(); }
 
@@ -88,15 +134,21 @@ int main()
         for (int i = 0; i < N; i++)
             for (int j = 0; j < M; j++)
             {
-                sprite1.setPosition(i * size, j * size);  window.draw(sprite1);
+                S_background.setPosition(i * size, j * size);  window.draw(S_background);
             }
 
         for (int i = 0; i < num; i++)
         {
-            sprite2.setPosition(s[i].x * size, s[i].y * size);  window.draw(sprite2);
+            if (i == 0)
+            {
+                S_blue_head.setPosition(s[i].x * size, s[i].y * size);  window.draw(S_blue_head);
+                continue;
+            }
+            S_blue.setPosition(s[i].x * size, s[i].y * size); 
+            window.draw(S_blue);
         }
 
-        sprite2.setPosition(f.x * size, f.y * size);  window.draw(sprite2);
+        S_blue.setPosition(f.x * size, f.y * size);  window.draw(S_blue);
 
         window.display();
     }
