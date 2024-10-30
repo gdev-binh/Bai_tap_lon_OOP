@@ -3,9 +3,9 @@
 using namespace sf;
 
 int N = 15, M = 17;
-int size = 32;
-int w = size * N;
-int h = size * M;
+int size = 32;  // kich thuoc texture
+int w = size * N; // chieu rong window 
+int h = size * M; // chieu cao window 
 
 int dir, num = 4;
 
@@ -23,24 +23,29 @@ public:
 
 void Tick()
 {
+    // di chuyen
     for (int i = num; i > 0; --i)
     {
         s[i].x = s[i - 1].x; s[i].y = s[i - 1].y;
     }
 
+    // dieu huong di
     if (dir == 0) s[0].y += 1;
     if (dir == 1) s[0].x -= 1;
     if (dir == 2) s[0].x += 1;
     if (dir == 3) s[0].y -= 1;
 
+    // khi dung trung fruit
     if ((s[0].x == f.x) && (s[0].y == f.y))
     {
         num++; f.x = rand() % N; f.y = rand() % M;
     }
 
+    // neu chay ra khoi 2 bien
     if (s[0].x > N) s[0].x = 0;  if (s[0].x < 0) s[0].x = N;
     if (s[0].y > M) s[0].y = 0;  if (s[0].y < 0) s[0].y = M;
 
+    // neu no can cai duoi
     for (int i = 1; i < num; i++)
         if (s[0].x == s[i].x && s[0].y == s[i].y)  num = i;
 }
@@ -61,7 +66,7 @@ int main()
     Texture T_blue_head, T_blue;
     T_blue_head.loadFromFile("images/blue_snake.png");
         Sprite S_blue_head(T_blue_head);
-       // S_blue_head.setOrigin(S_blue_head.getLocalBounds().width, S_blue_head.getLocalBounds().height);
+        S_blue_head.setOrigin(S_blue_head.getLocalBounds().height, S_blue_head.getLocalBounds().width );
     T_blue.loadFromFile("images/blue.png");
         Sprite S_blue(T_blue);
 
