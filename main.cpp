@@ -1,49 +1,26 @@
 #include <SFML/Graphics.hpp>
-#include"Snake.h"
-#include"Fruit.h"
-#include <time.h>
+#include"Game.h"
 
 
 using namespace sf;
 
 int N = 15, M = 17;
-int size = 32;  // kich thuoc texture
+int size = 32;  // kich thuoc moi~ texture
 int w = size * N; // chieu rong window 
 int h = size * M; // chieu cao window 
 
 int dir, num = 4;
 
-Snake  s[100];
+Snake  snake(num);
 
 Fruit f;
 
 void Tick()
 {
     // di chuyen
-    for (int i = num; i > 0; --i)
-    {
-        s[i].x = s[i - 1].x; s[i].y = s[i - 1].y;
-    }
-
-    // dieu huong di
-    if (dir == 0) s[0].y += 1;
-    if (dir == 1) s[0].x -= 1;
-    if (dir == 2) s[0].x += 1;
-    if (dir == 3) s[0].y -= 1;
-
-    // khi dung trung fruit
-    if ((s[0].x == f.x) && (s[0].y == f.y))
-    {
-        num++; f.x = rand() % N; f.y = rand() % M;
-    }
-
+    snake.move();
     // neu chay ra khoi 2 bien
-    if (s[0].x > N) s[0].x = 0;  if (s[0].x < 0) s[0].x = N;
-    if (s[0].y > M) s[0].y = 0;  if (s[0].y < 0) s[0].y = M;
-
-    // neu no can cai duoi
-    for (int i = 1; i < num; i++)
-        if (s[0].x == s[i].x && s[0].y == s[i].y)  num = i;
+    snake.checkCollision();
 }
 
 int main()
@@ -51,8 +28,11 @@ int main()
     srand(time(0));
 
     RenderWindow window(VideoMode(w, h), "Snake Game!");
-    window.setFramerateLimit(60);
+    //window.setFramerateLimit(60);
 
+    // khi maximize giu nguyen khung hinh`
+    //sf::View fixedView(sf::FloatRect(0, 0, w, h));
+    //window.setView(fixedView);
 
     // background
     Texture T_background;
@@ -62,7 +42,7 @@ int main()
     Texture T_blue_head, T_blue;
     T_blue_head.loadFromFile("images/blue_snake.png");
         Sprite S_blue_head(T_blue_head);
-        S_blue_head.setOrigin(S_blue_head.getLocalBounds().height, S_blue_head.getLocalBounds().width );
+      //  S_blue_head.setOrigin(S_blue_head.getLocalBounds().height, S_blue_head.getLocalBounds().width );
     T_blue.loadFromFile("images/blue.png");
         Sprite S_blue(T_blue);
 
@@ -87,7 +67,7 @@ int main()
             f.x = rand() % N;
             f.y = rand() % M;
 
-            dir = 0;
+            dir = 1;
         }
 
 
@@ -105,29 +85,34 @@ int main()
         if (Keyboard::isKeyPressed(Keyboard::Left))
         {
             dir = 1;
-            S_blue_head.setRotation(-90.f);
+          //  S_blue_head.setRotation(-90.f);
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Right))
         {
             dir = 2;
-            S_blue_head.setRotation(90.f);
+          //  S_blue_head.setRotation(90.f);
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Up))
         {
             dir = 3;
-            S_blue_head.setRotation(0.f);
+          //  S_blue_head.setRotation(0.f);
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Down))
         {
             dir = 0;
-            S_blue_head.setRotation(180.f);
+          //  S_blue_head.setRotation(180.f);
         }
 
 
-        if (timer > delay) { timer = 0; Tick(); }
+        if (timer > delay) 
+        { 
+            timer = 0; 
+        
+            Tick(); 
+        }
 
         ////// draw  ///////
         window.clear();
@@ -142,9 +127,11 @@ int main()
         {
             if (i == 0)
             {
+                // draw Head
                 S_blue_head.setPosition(s[i].x * size, s[i].y * size);  window.draw(S_blue_head);
                 continue;
             }
+            // draw mid 
             S_blue.setPosition(s[i].x * size, s[i].y * size); 
             window.draw(S_blue);
         }
