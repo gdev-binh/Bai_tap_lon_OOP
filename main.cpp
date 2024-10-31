@@ -1,5 +1,9 @@
 #include <SFML/Graphics.hpp>
+#include"Snake.h"
+#include"Fruit.h"
 #include <time.h>
+
+
 using namespace sf;
 
 int N = 15, M = 17;
@@ -9,17 +13,9 @@ int h = size * M; // chieu cao window
 
 int dir, num = 4;
 
-class Snake
-{
-public:
-    int x, y;
-}  s[100];
+Snake  s[100];
 
-class Fruit
-{
-public:
-    int x, y;
-} f;
+Fruit f;
 
 void Tick()
 {
