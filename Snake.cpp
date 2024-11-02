@@ -1,6 +1,5 @@
 #include "Snake.h"
 
-<<<<<<< HEAD
 Snake::Snake()
 {
 	length = 3; // mac dinh do dai` con ran 
@@ -89,7 +88,3 @@ float Snake::getHeadY()
 {
 	return snake[0].y;
 }
-=======
-
-
->>>>>>> main
