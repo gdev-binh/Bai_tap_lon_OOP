@@ -1,6 +1,7 @@
 #include"Snake.h"
 #include"Food.h"
-int width = 15, height = 17; // khoi tao kich thuoc map
+
+int width_window = 18, height_window = 19; // kich thuoc cua window
 int sizeGrid = 32;
 
 
@@ -10,9 +11,11 @@ int main()
 
     Snake snake;
     Food  food;
-    sf::RenderWindow window(sf::VideoMode(15 * 32, 17 * 32), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(width_window*sizeGrid, height_window*sizeGrid), "SFML works!");
 
-    // hinh` anh background
+  
+
+    // hinh` anh background map
     sf::Texture T_background1;
     T_background1.loadFromFile("images/1.png");
     sf::Sprite S_background1(T_background1);
@@ -21,10 +24,21 @@ int main()
     T_background2.loadFromFile("images/96ec59.png");
     sf::Sprite S_background2(T_background2);
 
+    // hinh` anh? khung vien`
+    sf::Texture T_khung_vien;
+    T_khung_vien.loadFromFile("images/khung_vien.png");
+    sf::Sprite S_khung_vien(T_khung_vien);
+
+    // hinh` anh? khung tren
+    sf::Texture T_khung_tren;
+    T_khung_tren.loadFromFile("images/khung_tren.png");
+    sf::Sprite S_khung_tren(T_khung_tren);
+
     sf::Clock clock;
     float timer = 0, delay = 0.1;
 
 
+    sf::View view(sf::FloatRect(0, 0, 15 * 32, 17 * 32));
     while (window.isOpen())
     {
         float time = clock.getElapsedTime().asSeconds();
@@ -35,6 +49,26 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (event.type == sf::Event::Resized)
+            { // khi maximize thi` khong bi. dan~ pixel            
+                float windowWidth = event.size.width; // khoi tao chieu rong moi khi kich thuoc cua so thay doi
+                float windowHeight = event.size.height; // khoi tao chieu dai moi
+                float aspectRatio = windowWidth / windowHeight; // khoi tao  ti le khung hinh
+
+                if (aspectRatio > 0.88f) { 
+                    float viewportWidth = 0.88f / aspectRatio;
+                    view.setViewport(sf::FloatRect((1.0f - viewportWidth) / 2, 0, viewportWidth, 1));
+                }
+                else { 
+                    float viewportHeight = aspectRatio / 0.88f;
+                    view.setViewport(sf::FloatRect(0, (1.0f - viewportHeight) / 2, 1, viewportHeight));
+                }
+
+                window.setView(view);
+
+            
+            }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -57,18 +91,37 @@ int main()
         {
             timer = 0;
             snake.snakeMove();
+
+            // check snake eat food
             if (snake.getHeadX() == food.getPositionFoodX() &&
                 snake.getHeadY() == food.getPositionFoodY())
             {
+
                 snake.grow();
+
                 food.foodRespawn();
             }
         }
 
         window.clear();
-        for (int i = 0; i < width; i++) // ve~ map
-            for (int j = 0; j < height; j++)
+
+        // ve~ map
+        for (int i = 0; i < width_window; i++) 
+            for (int j = 0; j < height_window; j++)
             {
+                if (j == 0 || j == 1)
+                {
+                    S_khung_tren.setPosition(i * sizeGrid, j * sizeGrid);
+                    window.draw(S_khung_tren);
+                    continue;
+                }
+                if (i == 0 || j == 2 || i == width_window-1 || j == height_window-1 )
+                {
+                    S_khung_vien.setPosition(i * sizeGrid, j * sizeGrid);
+                    window.draw(S_khung_vien);
+                    continue;
+                }
+
                 if (i % 2 == 0)
                 {
                     if (j % 2 != 0)

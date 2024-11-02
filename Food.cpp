@@ -17,8 +17,8 @@ void Food::drawFood(sf::RenderWindow& window)
 
 void Food::foodRespawn()
 {
-	positionFood.x = rand() % 15;
-	positionFood.y = rand() % 17;
+	positionFood.x = rand() % (15 - 1 + 1)+1;
+	positionFood.y = rand() % (17 - 3 + 1)+3; // tu 3 -> 17
 }
 
 float Food::getPositionFoodX()

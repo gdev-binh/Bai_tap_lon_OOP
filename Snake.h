@@ -14,7 +14,6 @@ private:
 	int length; // do dai` con ran ban dau
 	Direction dir; // khai bao  huong di chuyen
 
-
 public:
 	Snake(); // khoi tao ran' ban dau
 	void drawSnake(sf::RenderWindow& window);
@@ -23,6 +22,7 @@ public:
 	void grow(); // them duoi
 	float getHeadX();
 	float getHeadY();
+	int getSnakeSize();
 
 };
 

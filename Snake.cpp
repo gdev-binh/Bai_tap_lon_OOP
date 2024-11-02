@@ -22,7 +22,7 @@ void Snake::drawSnake(sf::RenderWindow& window)
 	sf::Sprite S_blue_head(T_blue_head);
 	sf::Sprite S_blue(T_blue);
 
-	for (int i = 0; i < snake.size(); i++)
+	for (float i = 0; i < snake.size(); i++)
 	{
 		if (i == 0)
 		{
@@ -63,14 +63,14 @@ void Snake::snakeMove()
 		snake[0].y -= 1;
 
 	// kiem tra chay vuot bien 
-	if (snake[0].x >= 15) // vuot qua bien phai
-		snake[0].x = 0;
-	if (snake[0].x < 0)	// vuot qua bien trai
-		snake[0].x = 14;
-	if (snake[0].y >= 17) // vuot qua bien duoi
-		snake[0].y = 0;
-	if (snake[0].y < 0)	// vuot qua bien tren
-		snake[0].y = 16;
+	if (snake[0].x >= 17) // vuot qua bien phai
+		snake[0].x = 1;
+	if (snake[0].x < 1)	// vuot qua bien trai
+		snake[0].x = 16;
+	if (snake[0].y >= 18) // vuot qua bien duoi
+		snake[0].y = 3;
+	if (snake[0].y < 3)	// vuot qua bien tren
+		snake[0].y = 17;
 
 }
 
@@ -87,4 +87,9 @@ float Snake::getHeadX()
 float Snake::getHeadY()
 {
 	return snake[0].y;
+}
+
+int Snake::getSnakeSize()
+{
+	return snake.size();
 }
