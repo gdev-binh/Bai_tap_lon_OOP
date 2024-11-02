@@ -1,145 +1,107 @@
-#include <SFML/Graphics.hpp>
-#include"Game.h"
+#include"Snake.h"
+#include"Food.h"
+int width = 15, height = 17; // khoi tao kich thuoc map
+int sizeGrid = 32;
 
-
-using namespace sf;
-
-int N = 15, M = 17;
-int size = 32;  // kich thuoc moi~ texture
-int w = size * N; // chieu rong window 
-int h = size * M; // chieu cao window 
-
-int dir, num = 4;
-
-Snake  snake(num);
-
-Fruit f;
-
-void Tick()
-{
-    // di chuyen
-    snake.move();
-    // neu chay ra khoi 2 bien
-    snake.checkCollision();
-}
 
 int main()
 {
     srand(time(0));
 
-    RenderWindow window(VideoMode(w, h), "Snake Game!");
-    //window.setFramerateLimit(60);
+    Snake snake;
+    Food  food;
+    sf::RenderWindow window(sf::VideoMode(15 * 32, 17 * 32), "SFML works!");
 
-    // khi maximize giu nguyen khung hinh`
-    //sf::View fixedView(sf::FloatRect(0, 0, w, h));
-    //window.setView(fixedView);
+    // hinh` anh background
+    sf::Texture T_background1;
+    T_background1.loadFromFile("images/1.png");
+    sf::Sprite S_background1(T_background1);
 
-    // background
-    Texture T_background;
-    T_background.loadFromFile("images/4a752c.png");
-        Sprite S_background(T_background);
-    // snake
-    Texture T_blue_head, T_blue;
-    T_blue_head.loadFromFile("images/blue_snake.png");
-        Sprite S_blue_head(T_blue_head);
-      //  S_blue_head.setOrigin(S_blue_head.getLocalBounds().height, S_blue_head.getLocalBounds().width );
-    T_blue.loadFromFile("images/blue.png");
-        Sprite S_blue(T_blue);
+    sf::Texture T_background2;
+    T_background2.loadFromFile("images/96ec59.png");
+    sf::Sprite S_background2(T_background2);
 
-    Clock clock;
+    sf::Clock clock;
     float timer = 0, delay = 0.1;
 
-    f.x = 10;
-    f.y = 10;
 
     while (window.isOpen())
     {
-
-        if (Keyboard::isKeyPressed(Keyboard::Escape))
-        {
-            num = 4;
-            for (int i = 0; i < num; ++i)
-            {
-                s[i].x = N / 2;
-                s[i].y = M / 2 + i;
-            }
-
-            f.x = rand() % N;
-            f.y = rand() % M;
-
-            dir = 1;
-        }
-
-
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
-        timer += time;
-
-        Event e;
-        while (window.pollEvent(e))
+        timer = timer + time;
+        sf::Event event;
+        while (window.pollEvent(event))
         {
-            if (e.type == Event::Closed)
+            if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Left))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            dir = 1;
-          //  S_blue_head.setRotation(-90.f);
+            snake.setDirectionSnake(DOWN);
         }
-
-        if (Keyboard::isKeyPressed(Keyboard::Right))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            dir = 2;
-          //  S_blue_head.setRotation(90.f);
+            snake.setDirectionSnake(LEFT);
         }
-
-        if (Keyboard::isKeyPressed(Keyboard::Up))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            dir = 3;
-          //  S_blue_head.setRotation(0.f);
+            snake.setDirectionSnake(RIGHT);
         }
-
-        if (Keyboard::isKeyPressed(Keyboard::Down))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            dir = 0;
-          //  S_blue_head.setRotation(180.f);
+            snake.setDirectionSnake(UP);
+        }
+        if (timer > delay)
+        {
+            timer = 0;
+            snake.snakeMove();
+            if (snake.getHeadX() == food.getPositionFoodX() &&
+                snake.getHeadY() == food.getPositionFoodY())
+            {
+                snake.grow();
+                food.foodRespawn();
+            }
         }
 
-
-        if (timer > delay) 
-        { 
-            timer = 0; 
-        
-            Tick(); 
-        }
-
-        ////// draw  ///////
         window.clear();
-
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < M; j++)
+        for (int i = 0; i < width; i++) // ve~ map
+            for (int j = 0; j < height; j++)
             {
-                S_background.setPosition(i * size, j * size);  window.draw(S_background);
+                if (i % 2 == 0)
+                {
+                    if (j % 2 != 0)
+                    {
+                        S_background2.setPosition(i * sizeGrid, j * sizeGrid);
+                        window.draw(S_background2);
+                    }
+                    else
+                    {
+                        S_background1.setPosition(i * sizeGrid, j * sizeGrid);
+                        window.draw(S_background1);
+                    }
+
+                }
+                else
+                {
+                    if (j % 2 == 0)
+                    {
+                        S_background2.setPosition(i * sizeGrid, j * sizeGrid);
+                        window.draw(S_background2);
+                    }
+                    else
+                    {
+                        S_background1.setPosition(i * sizeGrid, j * sizeGrid);
+                        window.draw(S_background1);
+                    }
+                }
+
             }
 
-        for (int i = 0; i < num; i++)
-        {
-            if (i == 0)
-            {
-                // draw Head
-                S_blue_head.setPosition(s[i].x * size, s[i].y * size);  window.draw(S_blue_head);
-                continue;
-            }
-            // draw mid 
-            S_blue.setPosition(s[i].x * size, s[i].y * size); 
-            window.draw(S_blue);
-        }
-
-        S_blue.setPosition(f.x * size, f.y * size);  window.draw(S_blue);
-
+        snake.drawSnake(window);
+        food.drawFood(window);
         window.display();
     }
-
     return 0;
 }

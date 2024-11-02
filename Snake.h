@@ -1,29 +1,28 @@
 #pragma once
+#include "Food.h"
 
 
-enum Direction { DOWN, LEFT, RIGHT, UP }; // HUONG DI CHUYEN
 
+
+// KHOI TAO BIEN ENUM 0	 1	2	3
+enum Direction { DOWN, LEFT, RIGHT, UP }; // huong di chuyen?
 class Snake
 {
-private: 
-    class Segment {
-    // class toa do cac doan cua con ran
-    public:
-        int x; // theo cot
-        int y; // theo hang`
-    };
-    Direction dir;
-    int length;
-    Segment s[100];
+private:
+
+	std::vector<sf::Vector2f> snake; //
+	int length; // do dai` con ran ban dau
+	Direction dir; // khai bao  huong di chuyen
+
 
 public:
-    Snake(int length);
-    void move(); // di chuyen
-    int grow();
-    bool checkCollision(); // kiem tra va cham  
-
-    int getHeadX();
-    int getHeadY();
-
+	Snake(); // khoi tao ran' ban dau
+	void drawSnake(sf::RenderWindow& window);
+	void setDirectionSnake(Direction newDir);
+	void snakeMove();
+	void grow(); // them duoi
+	float getHeadX();
+	float getHeadY();
 
 };
+
