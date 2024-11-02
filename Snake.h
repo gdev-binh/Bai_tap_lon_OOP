@@ -1,9 +1,6 @@
 #pragma once
 #include "Food.h"
 
-
-
-
 // KHOI TAO BIEN ENUM 0	 1	2	3
 enum Direction { DOWN, LEFT, RIGHT, UP }; // huong di chuyen?
 class Snake
@@ -25,4 +22,3 @@ public:
 	float getHeadY();
 
 };
-
