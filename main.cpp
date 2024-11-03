@@ -7,6 +7,8 @@ int width_window = 18, height_window = 19; // kich thuoc cua window
 int sizeGrid = 32;
 
 
+
+
 int main()
 {
     srand(time(0));
@@ -22,13 +24,21 @@ int main()
     // khai bao font chu~
     sf::Font font;
     font.loadFromFile("AGENCYB.ttf");
-    sf::Text text;
-    text.setFont(font);
-    text.setString("0");
-    text.setCharacterSize(24); // don vi pixel
-    text.setStyle(sf::Text::Bold);
-    text.setPosition(64, 16);
+   
+    //  score 
+    sf::Text text_score;
+    text_score.setFont(font);
+    text_score.setString("0");
+    text_score.setCharacterSize(24); // don vi pixel
+    text_score.setStyle(sf::Text::Bold);
+    text_score.setPosition (64, 16);
   
+    // record
+    sf::Text text_record;
+    text_record.setFont(font);
+    text_record.setString("0");
+
+
 
     // hinh` anh background map
     sf::Texture T_background1;
@@ -51,17 +61,21 @@ int main()
 
     // hinh` anh food
     sf::Texture tFood;
-    tFood.loadFromFile("images/4d65b4.png");
+    tFood.loadFromFile("images/apple.png");
     sf::Sprite	sFood(tFood);
     sFood.setPosition(16, 16);
 
+    sf::Texture tCup;
+    tCup.loadFromFile("images/cup.png");
+    sf::Sprite sCup(tCup);
+    sCup.setPosition(96, 16);
 
 
     sf::Clock clock;
     float timer = 0, delay = 0.1;
 
 
-    sf::View view(sf::FloatRect(0, 0, 15 * 32, 17 * 32));
+    sf::View view(sf::FloatRect(0, 0, 18 * 32, 19 * 32));
     while (window.isOpen())
     {
         float time = clock.getElapsedTime().asSeconds();
@@ -78,13 +92,13 @@ int main()
                 float windowWidth = event.size.width; // khoi tao chieu rong moi khi kich thuoc cua so thay doi
                 float windowHeight = event.size.height; // khoi tao chieu dai moi
                 float aspectRatio = windowWidth / windowHeight; // khoi tao  ti le khung hinh
-
-                if (aspectRatio > 0.88f) { 
-                    float viewportWidth = 0.88f / aspectRatio;
+                
+                if (aspectRatio > 0.94f) { 
+                    float viewportWidth = 0.947f / aspectRatio;
                     view.setViewport(sf::FloatRect((1.0f - viewportWidth) / 2, 0, viewportWidth, 1));
                 }
                 else { 
-                    float viewportHeight = aspectRatio / 0.88f;
+                    float viewportHeight = aspectRatio / 0.947f;
                     view.setViewport(sf::FloatRect(0, (1.0f - viewportHeight) / 2, 1, viewportHeight));
                 }
 
@@ -122,14 +136,13 @@ int main()
                 score++;
                 snake.grow();
                 // check xem vi tri food co = vi tri con ran khong?
-                for (int i = 0; i < snake.getSnakeSize(); i++)
-                {
-                   if (food.getPositionFoodX() == snake.getSnakePositionX(i) &&
-                       food.getPositionFoodY() == snake.getSnakePositionY(i))
-                   {
-                       food.foodRespawn();
-                   }
-                }
+         
+
+
+            }
+            while (!snake.checkFoodEqualSnake(food))
+            {
+                food.foodRespawn();
             }
         }
 
@@ -181,13 +194,15 @@ int main()
                 }
 
             }
+
         window.draw(sFood);
-     
+
         // draw diem?
         std::stringstream ss; // tao chuoi tu kieu du lieu int
         ss << score;
-        text.setString(ss.str());
-        window.draw(text);
+        text_score.setString(ss.str());
+        window.draw(text_score);
+        window.draw(sCup);
 
 
         snake.drawSnake(window);

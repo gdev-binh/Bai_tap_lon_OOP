@@ -20,12 +20,13 @@ public:
 	void setDirectionSnake(Direction newDir);
 	void snakeMove();
 	void grow(); // them duoi
-
+	bool checkFoodEqualSnake(Food food);
 	int getSnakeSize();
 
 	// lay vi tri con ran
 	float getSnakePositionX(int i);
 	float getSnakePositionY(int i);
+
 
 
 };

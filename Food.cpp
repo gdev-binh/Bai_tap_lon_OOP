@@ -9,7 +9,7 @@ Food::Food()
 void Food::drawFood(sf::RenderWindow& window)
 {
 	sf::Texture tFood;
-	tFood.loadFromFile("images/blue.png");
+	tFood.loadFromFile("images/apple.png");
 	sf::Sprite	sFood(tFood);
 	sFood.setPosition(positionFood.x * 32, positionFood.y * 32);
 	window.draw(sFood);

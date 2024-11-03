@@ -79,6 +79,23 @@ void Snake::grow()
 	snake_part.push_back(snake_part.back()); // them vao duoi
 }
 
+bool Snake::checkFoodEqualSnake(Food food) // kiem tra ran trung voi food
+{
+	for (int i = 0; i < snake_part.size() ; i++)
+	{
+		if (food.getPositionFoodX() == snake_part[i].x &&
+			food.getPositionFoodY() == snake_part[i].y)
+		{
+			return false;
+		}
+	}
+	return true;
+
+
+}
+
+
+
 
 int Snake::getSnakeSize()
 {
