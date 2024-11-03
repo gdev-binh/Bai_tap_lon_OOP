@@ -1,6 +1,8 @@
 #include"Snake.h"
 #include"Food.h"
 
+#include<sstream>
+
 int width_window = 18, height_window = 19; // kich thuoc cua window
 int sizeGrid = 32;
 
@@ -9,30 +11,51 @@ int main()
 {
     srand(time(0));
 
-    Snake snake;
-    Food  food;
+    Snake snake; // khoi tao snake
+    Food  food; // khoi tao food
+
+    int score = 0; // diem 
+    int record; // ki luc cua diem
+
     sf::RenderWindow window(sf::VideoMode(width_window*sizeGrid, height_window*sizeGrid), "SFML works!");
-    
+
+    // khai bao font chu~
+    sf::Font font;
+    font.loadFromFile("AGENCYB.ttf");
+    sf::Text text;
+    text.setFont(font);
+    text.setString("0");
+    text.setCharacterSize(24); // don vi pixel
+    text.setStyle(sf::Text::Bold);
+    text.setPosition(64, 16);
   
 
     // hinh` anh background map
     sf::Texture T_background1;
-    T_background1.loadFromFile("images/1.png");
+    T_background1.loadFromFile("images/1ebc73.png");
     sf::Sprite S_background1(T_background1);
 
     sf::Texture T_background2;
-    T_background2.loadFromFile("images/96ec59.png");
+    T_background2.loadFromFile("images/91db69.png");
     sf::Sprite S_background2(T_background2);
 
     // hinh` anh? khung vien`
     sf::Texture T_khung_vien;
-    T_khung_vien.loadFromFile("images/khung_vien.png");
+    T_khung_vien.loadFromFile("images/239063.png");
     sf::Sprite S_khung_vien(T_khung_vien);
 
     // hinh` anh? khung tren
     sf::Texture T_khung_tren;
-    T_khung_tren.loadFromFile("images/khung_tren.png");
+    T_khung_tren.loadFromFile("images/165a4c.png");
     sf::Sprite S_khung_tren(T_khung_tren);
+
+    // hinh` anh food
+    sf::Texture tFood;
+    tFood.loadFromFile("images/4d65b4.png");
+    sf::Sprite	sFood(tFood);
+    sFood.setPosition(16, 16);
+
+
 
     sf::Clock clock;
     float timer = 0, delay = 0.1;
@@ -93,10 +116,10 @@ int main()
             snake.snakeMove();
 
             // check snake eat food
-            if (snake.getHeadX() == food.getPositionFoodX() &&
-                snake.getHeadY() == food.getPositionFoodY())
+            if (snake.getSnakePositionX(0) == food.getPositionFoodX() &&
+                snake.getSnakePositionY(0) == food.getPositionFoodY())
             {
-
+                score++;
                 snake.grow();
                 // check xem vi tri food co = vi tri con ran khong?
                 for (int i = 0; i < snake.getSnakeSize(); i++)
@@ -158,6 +181,14 @@ int main()
                 }
 
             }
+        window.draw(sFood);
+     
+        // draw diem?
+        std::stringstream ss; // tao chuoi tu kieu du lieu int
+        ss << score;
+        text.setString(ss.str());
+        window.draw(text);
+
 
         snake.drawSnake(window);
         food.drawFood(window);

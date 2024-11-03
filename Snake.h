@@ -10,7 +10,7 @@ class Snake
 {
 private:
 
-	std::vector<sf::Vector2f> snake; //
+	std::vector<sf::Vector2f> snake_part; // tung` doan cua con ran
 	int length; // do dai` con ran ban dau
 	Direction dir; // khai bao  huong di chuyen
 
@@ -20,10 +20,10 @@ public:
 	void setDirectionSnake(Direction newDir);
 	void snakeMove();
 	void grow(); // them duoi
-	float getHeadX();
-	float getHeadY();
+
 	int getSnakeSize();
 
+	// lay vi tri con ran
 	float getSnakePositionX(int i);
 	float getSnakePositionY(int i);
 
