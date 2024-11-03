@@ -24,5 +24,9 @@ public:
 	float getHeadY();
 	int getSnakeSize();
 
+	float getSnakePositionX(int i);
+	float getSnakePositionY(int i);
+
+
 };
 

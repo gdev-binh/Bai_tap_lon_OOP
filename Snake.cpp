@@ -93,3 +93,14 @@ int Snake::getSnakeSize()
 {
 	return snake.size();
 }
+
+float Snake::getSnakePositionX(int i)
+{
+	return snake[i].x;
+}
+
+float Snake::getSnakePositionY(int i)
+{
+	return snake[i].y;
+}
+

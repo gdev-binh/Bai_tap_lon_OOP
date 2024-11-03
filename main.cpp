@@ -12,7 +12,7 @@ int main()
     Snake snake;
     Food  food;
     sf::RenderWindow window(sf::VideoMode(width_window*sizeGrid, height_window*sizeGrid), "SFML works!");
-
+    
   
 
     // hinh` anh background map
@@ -98,8 +98,15 @@ int main()
             {
 
                 snake.grow();
-
-                food.foodRespawn();
+                // check xem vi tri food co = vi tri con ran khong?
+                for (int i = 0; i < snake.getSnakeSize(); i++)
+                {
+                   if (food.getPositionFoodX() == snake.getSnakePositionX(i) &&
+                       food.getPositionFoodY() == snake.getSnakePositionY(i))
+                   {
+                       food.foodRespawn();
+                   }
+                }
             }
         }
 

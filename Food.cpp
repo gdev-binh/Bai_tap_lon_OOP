@@ -17,6 +17,7 @@ void Food::drawFood(sf::RenderWindow& window)
 
 void Food::foodRespawn()
 {
+	// phai khac voi vi tri con ran dang nam`
 	positionFood.x = rand() % (15 - 1 + 1)+1;
 	positionFood.y = rand() % (17 - 3 + 1)+3; // tu 3 -> 17
 }
