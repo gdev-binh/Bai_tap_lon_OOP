@@ -1,5 +1,6 @@
 #include"Snake.h"
 #include"Food.h"
+#include"Menu.h"
 
 #include<sstream>
 
@@ -11,15 +12,19 @@ int sizeGrid = 32;
 
 int main()
 {
+    // khoi tao window 
+    sf::RenderWindow window(sf::VideoMode(width_window * sizeGrid, height_window * sizeGrid), "Snakeeee!");
     srand(time(0));
+
+    Menu menu(window.getSize().x, window.getSize().y) ;
 
     Snake snake; // khoi tao snake
     Food  food; // khoi tao food
 
     int score = 0; // diem 
-    int record; // ki luc cua diem
+    int record = 0; // ki luc cua diem
 
-    sf::RenderWindow window(sf::VideoMode(width_window*sizeGrid, height_window*sizeGrid), "SFML works!");
+  
 
     // khai bao font chu~
     sf::Font font;
@@ -31,12 +36,15 @@ int main()
     text_score.setString("0");
     text_score.setCharacterSize(24); // don vi pixel
     text_score.setStyle(sf::Text::Bold);
-    text_score.setPosition (64, 16);
+    text_score.setPosition (64, 20);
   
     // record
     sf::Text text_record;
     text_record.setFont(font);
     text_record.setString("0");
+    text_record.setCharacterSize(24);
+    text_record.setStyle(sf::Text::Bold);
+    text_record.setPosition(140, 20);
 
 
 
@@ -65,28 +73,34 @@ int main()
     sf::Sprite	sFood(tFood);
     sFood.setPosition(16, 16);
 
+    // hinh` anh? cup ki luc ( record )
     sf::Texture tCup;
     tCup.loadFromFile("images/cup.png");
     sf::Sprite sCup(tCup);
     sCup.setPosition(96, 16);
 
-
+    // khoi tao clock
     sf::Clock clock;
     float timer = 0, delay = 0.1;
 
 
-    sf::View view(sf::FloatRect(0, 0, 18 * 32, 19 * 32));
+    // khoi tao viewGame tao mac dinh khung hinh`
+    sf::View viewGame(sf::FloatRect(0, 0, 18 * 32, 19 * 32));
+   
     while (window.isOpen())
     {
+        // khoi tao time
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
         timer = timer + time;
+        
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
                 window.close();
 
+            // khi thay doi kich thuoc cua so
             if (event.type == sf::Event::Resized)
             { // khi maximize thi` khong bi. dan~ pixel            
                 float windowWidth = event.size.width; // khoi tao chieu rong moi khi kich thuoc cua so thay doi
@@ -95,17 +109,25 @@ int main()
                 
                 if (aspectRatio > 0.94f) { 
                     float viewportWidth = 0.947f / aspectRatio;
-                    view.setViewport(sf::FloatRect((1.0f - viewportWidth) / 2, 0, viewportWidth, 1));
+                    viewGame.setViewport(sf::FloatRect((1.0f - viewportWidth) / 2, 0, viewportWidth, 1));
                 }
                 else { 
                     float viewportHeight = aspectRatio / 0.947f;
-                    view.setViewport(sf::FloatRect(0, (1.0f - viewportHeight) / 2, 1, viewportHeight));
+                    viewGame.setViewport(sf::FloatRect(0, (1.0f - viewportHeight) / 2, 1, viewportHeight));
                 }
 
-                window.setView(view);
+                window.setView(viewGame);
 
-            
             }
+            // menu
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                    menu.moveUp();
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                    menu.moveDown();
+            }
+
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -134,12 +156,12 @@ int main()
                 snake.getSnakePositionY(0) == food.getPositionFoodY())
             {
                 score++;
+                if (score > record)
+                    record = score;
                 snake.grow();
-                // check xem vi tri food co = vi tri con ran khong?
-         
-
-
             }
+
+            // check xem vi tri food co = vi tri con ran khong?
             while (!snake.checkFoodEqualSnake(food))
             {
                 food.foodRespawn();
@@ -195,18 +217,23 @@ int main()
 
             }
 
-        window.draw(sFood);
+        menu.drawMenu(window);
 
+        window.draw(sFood); // ve~ icon food
         // draw diem?
-        std::stringstream ss; // tao chuoi tu kieu du lieu int
-        ss << score;
-        text_score.setString(ss.str());
+        std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
+        ss_score << score;
+        text_score.setString(ss_score.str());
         window.draw(text_score);
+
+       // ve ~icon cup
         window.draw(sCup);
+        ss_record << record;
+        text_record.setString(ss_record.str());
+        window.draw(text_record);
 
-
-        snake.drawSnake(window);
-        food.drawFood(window);
+        snake.drawSnake(window); 
+        food.drawFood(window);   // ve food moi ( new respawn )
         window.display();
     }
     return 0;
