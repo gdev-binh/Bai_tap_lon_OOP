@@ -7,8 +7,7 @@
 int width_window = 18, height_window = 19; // kich thuoc cua window
 int sizeGrid = 32;
 
-
-
+enum GameState{MENU, PLAY, PAUSE, EXIT, CONFIRM_EXIT};
 
 int main()
 {
@@ -16,7 +15,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(width_window * sizeGrid, height_window * sizeGrid), "Snakeeee!");
     srand(time(0));
 
-    Menu menu(window.getSize().x, window.getSize().y) ;
+    Menu menu(window.getSize().x, window.getSize().y);
+    GameState state = MENU;
 
     Snake snake; // khoi tao snake
     Food  food; // khoi tao food
@@ -24,20 +24,18 @@ int main()
     int score = 0; // diem 
     int record = 0; // ki luc cua diem
 
-  
-
     // khai bao font chu~
     sf::Font font;
     font.loadFromFile("AGENCYB.ttf");
-   
+
     //  score 
     sf::Text text_score;
     text_score.setFont(font);
     text_score.setString("0");
     text_score.setCharacterSize(24); // don vi pixel
     text_score.setStyle(sf::Text::Bold);
-    text_score.setPosition (64, 20);
-  
+    text_score.setPosition(64, 20);
+
     // record
     sf::Text text_record;
     text_record.setFont(font);
@@ -86,14 +84,14 @@ int main()
 
     // khoi tao viewGame tao mac dinh khung hinh`
     sf::View viewGame(sf::FloatRect(0, 0, 18 * 32, 19 * 32));
-   
+
     while (window.isOpen())
     {
         // khoi tao time
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
         timer = timer + time;
-        
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -106,12 +104,12 @@ int main()
                 float windowWidth = event.size.width; // khoi tao chieu rong moi khi kich thuoc cua so thay doi
                 float windowHeight = event.size.height; // khoi tao chieu dai moi
                 float aspectRatio = windowWidth / windowHeight; // khoi tao  ti le khung hinh
-                
-                if (aspectRatio > 0.94f) { 
+
+                if (aspectRatio > 0.94f) {
                     float viewportWidth = 0.947f / aspectRatio;
                     viewGame.setViewport(sf::FloatRect((1.0f - viewportWidth) / 2, 0, viewportWidth, 1));
                 }
-                else { 
+                else {
                     float viewportHeight = aspectRatio / 0.947f;
                     viewGame.setViewport(sf::FloatRect(0, (1.0f - viewportHeight) / 2, 1, viewportHeight));
                 }
@@ -120,120 +118,160 @@ int main()
 
             }
             // menu
-            if (event.type == sf::Event::KeyPressed)
+            if (state == MENU)
             {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                    menu.moveUp();
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                    menu.moveDown();
+                if (event.type == sf::Event::KeyPressed)
+                {
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                        menu.moveUp();
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                        menu.moveDown();
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+                    {
+                        if (menu.getPressedItem() == 0)
+                        {
+                            std::cout << "PLAY HAD CHOOSE" << std::endl;
+                            state = PLAY;
+                        }
+
+                        if (menu.getPressedItem() == 1)
+                            std::cout << "SETTINGS HAD CHOOSE" << std::endl;
+                        if (menu.getPressedItem() == 2)
+                        {
+                            std::cout << "EXIT HAD CHOOSE" << std::endl;
+                            window.close();
+                        }
+
+                    }
+                
+                }
+               
+
             }
+             if (state == PLAY && event.type == sf::Event::KeyPressed)
+             { 
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                {
+                            
+                    std::cout << "Escapes has choosen!!" << std::endl;
+                    state = MENU;
+                    snake = Snake();
+                    score = 0;
+                    food = Food();
+                }
+             }
+
 
         }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            snake.setDirectionSnake(DOWN);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
-            snake.setDirectionSnake(LEFT);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            snake.setDirectionSnake(RIGHT);
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            snake.setDirectionSnake(UP);
-        }
-        if (timer > delay)
-        {
-            timer = 0;
-            snake.snakeMove();
-
-            // check snake eat food
-            if (snake.getSnakePositionX(0) == food.getPositionFoodX() &&
-                snake.getSnakePositionY(0) == food.getPositionFoodY())
-            {
-                score++;
-                if (score > record)
-                    record = score;
-                snake.grow();
-            }
-
-            // check xem vi tri food co = vi tri con ran khong?
-            while (!snake.checkFoodEqualSnake(food))
-            {
-                food.foodRespawn();
-            }
-        }
-
         window.clear();
 
-        // ve~ map
-        for (int i = 0; i < width_window; i++) 
-            for (int j = 0; j < height_window; j++)
+        if (state == MENU) // con` o menu
+        {
+            menu.drawMenu(window);
+
+        }
+
+        else if (state == PLAY) // khi da an Play
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
-                if (j == 0 || j == 1)
-                {
-                    S_khung_tren.setPosition(i * sizeGrid, j * sizeGrid);
-                    window.draw(S_khung_tren);
-                    continue;
-                }
-                if (i == 0 || j == 2 || i == width_window-1 || j == height_window-1 )
-                {
-                    S_khung_vien.setPosition(i * sizeGrid, j * sizeGrid);
-                    window.draw(S_khung_vien);
-                    continue;
-                }
-
-                if (i % 2 == 0)
-                {
-                    if (j % 2 != 0)
-                    {
-                        S_background2.setPosition(i * sizeGrid, j * sizeGrid);
-                        window.draw(S_background2);
-                    }
-                    else
-                    {
-                        S_background1.setPosition(i * sizeGrid, j * sizeGrid);
-                        window.draw(S_background1);
-                    }
-
-                }
-                else
-                {
-                    if (j % 2 == 0)
-                    {
-                        S_background2.setPosition(i * sizeGrid, j * sizeGrid);
-                        window.draw(S_background2);
-                    }
-                    else
-                    {
-                        S_background1.setPosition(i * sizeGrid, j * sizeGrid);
-                        window.draw(S_background1);
-                    }
-                }
-
+                snake.setDirectionSnake(DOWN);
             }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            {
+                snake.setDirectionSnake(LEFT);
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            {
+                snake.setDirectionSnake(RIGHT);
+            }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            {
+                snake.setDirectionSnake(UP);
+            }
+            if (timer > delay)
+            {
+                timer = 0;
+                snake.snakeMove();
 
-        menu.drawMenu(window);
+                // check snake eat food
+                if (snake.getSnakePositionX(0) == food.getPositionFoodX() &&
+                    snake.getSnakePositionY(0) == food.getPositionFoodY())
+                {
+                    score++;
+                    if (score > record)
+                        record = score;
+                    snake.grow();
+                }
 
-        window.draw(sFood); // ve~ icon food
-        // draw diem?
-        std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
-        ss_score << score;
-        text_score.setString(ss_score.str());
-        window.draw(text_score);
+                // check xem vi tri food co = vi tri con ran khong?
+                while (!snake.checkFoodEqualSnake(food))
+                {
+                    food.foodRespawn();
+                }
+            }
+            // ve~ map
+            for (int i = 0; i < width_window; i++)
+                for (int j = 0; j < height_window; j++)
+                {
+                    if (j == 0 || j == 1)
+                    {
+                        S_khung_tren.setPosition(i * sizeGrid, j * sizeGrid);
+                        window.draw(S_khung_tren);
+                        continue;
+                    }
+                    if (i == 0 || j == 2 || i == width_window - 1 || j == height_window - 1)
+                    {
+                        S_khung_vien.setPosition(i * sizeGrid, j * sizeGrid);
+                        window.draw(S_khung_vien);
+                        continue;
+                    }
+                    if (i % 2 == 0)
+                    {
+                        if (j % 2 != 0)
+                        {
+                            S_background2.setPosition(i * sizeGrid, j * sizeGrid);
+                            window.draw(S_background2);
+                        }
+                        else
+                        {
+                            S_background1.setPosition(i * sizeGrid, j * sizeGrid);
+                            window.draw(S_background1);
+                        }
 
-       // ve ~icon cup
-        window.draw(sCup);
-        ss_record << record;
-        text_record.setString(ss_record.str());
-        window.draw(text_record);
+                    }
+                    else
+                    {
+                        if (j % 2 == 0)
+                        {
+                            S_background2.setPosition(i * sizeGrid, j * sizeGrid);
+                            window.draw(S_background2);
+                        }
+                        else
+                        {
+                            S_background1.setPosition(i * sizeGrid, j * sizeGrid);
+                            window.draw(S_background1);
+                        }
+                    }
+                }
 
-        snake.drawSnake(window); 
-        food.drawFood(window);   // ve food moi ( new respawn )
+            window.draw(sFood); // ve~ icon food
+            // draw diem?
+            std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
+            ss_score << score;
+            text_score.setString(ss_score.str());
+            window.draw(text_score);
+
+            // ve ~icon cup
+            window.draw(sCup);
+            ss_record << record;
+            text_record.setString(ss_record.str());
+            window.draw(text_record);
+
+            snake.drawSnake(window);
+            food.drawFood(window);   // ve food moi ( new respawn )
+        }
+
         window.display();
     }
     return 0;

@@ -3,6 +3,7 @@
 #include<vector>
 #include <time.h>
 #include<cstdlib> // thu vien dung` ham` rand()
+#include<iostream>
 
 
 class Food

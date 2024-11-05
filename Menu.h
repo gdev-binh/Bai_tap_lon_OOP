@@ -18,6 +18,9 @@ public:
 	void moveDown();
 
 
+	int getPressedItem(); // lay vi option con` chon.
+
+
 
 };
 
