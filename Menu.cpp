@@ -4,62 +4,108 @@ Menu::Menu(float width, float height)
 {
 	font.loadFromFile("AGENCYB.ttf");
 
-	menu[0].setFont(font);
-	menu[0].setFillColor(sf::Color::Red);
-	menu[0].setString("Play");
-	menu[0].setPosition(sf::Vector2f(width / 2, height /(3+1) * 1));
+	// play
+	menuMain[0].setFont(font);
+	menuMain[0].setFillColor(sf::Color::Red);
+	menuMain[0].setString("Play");
+	menuMain[0].setPosition(sf::Vector2f(width / 2, height /(3+1) * 1));
 
-	menu[1].setFont(font);
-	menu[1].setFillColor(sf::Color::White);
-	menu[1].setString("Settings");
-	menu[1].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 2));
+	// Settings
+	menuMain[1].setFont(font);
+	menuMain[1].setFillColor(sf::Color::White);
+	menuMain[1].setString("Settings");
+	menuMain[1].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 2));
 
-	menu[2].setFont(font);
-	menu[2].setFillColor(sf::Color::White);
-	menu[2].setString("Exit");
-	menu[2].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 3));
+	// Exit 
+	menuMain[2].setFont(font);
+	menuMain[2].setFillColor(sf::Color::White);
+	menuMain[2].setString("Exit");
+	menuMain[2].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 3));
 
-	selectedItemIndex = 0;
+	menuPause[0].setFont(font);
+	menuPause[0].setFillColor(sf::Color::Red);
+	menuPause[0].setString("Continue play");
+	menuPause[0].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 1));
 
+	menuPause[1].setFont(font);
+	menuPause[1].setFillColor(sf::Color::White);
+	menuPause[1].setString("Return to the main menu");
+	menuPause[1].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 2));
+
+	selectedItemIndexMenu = 0;
 }
 
 Menu::~Menu()
 {
 }
 
-void Menu::drawMenu(sf::RenderWindow& window)
+void Menu::drawMenuMain(sf::RenderWindow& window)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		window.draw(menu[i]);
+		window.draw(menuMain[i]);
 	}
 }
 
-void Menu::moveUp()
+void Menu::drawMenuPause(sf::RenderWindow& window)
 {
-	if (selectedItemIndex - 1 >= 0)
+	window.draw(menuPause[0]);
+	window.draw(menuPause[1]);
+
+}
+
+void Menu::moveUpMenuMain()
+{
+	if (selectedItemIndexMenu - 1 >= 0)
 	{
-		menu[selectedItemIndex].setFillColor(sf::Color::White);
-		selectedItemIndex--;
-		menu[selectedItemIndex].setFillColor(sf::Color::Red);
+		menuMain[selectedItemIndexMenu].setFillColor(sf::Color::White);
+		selectedItemIndexMenu--;
+		menuMain[selectedItemIndexMenu].setFillColor(sf::Color::Red);
 
 	}
 
 
 }
 
-void Menu::moveDown()
+void Menu::moveDownMenuMain()
 {
-		if (selectedItemIndex + 1 < 3)
+	if (selectedItemIndexMenu + 1 < 3)
 	{
-		menu[selectedItemIndex].setFillColor(sf::Color::White);
-		selectedItemIndex++;
-		menu[selectedItemIndex].setFillColor(sf::Color::Red);
+		menuMain[selectedItemIndexMenu].setFillColor(sf::Color::White);
+		selectedItemIndexMenu++;
+		menuMain[selectedItemIndexMenu].setFillColor(sf::Color::Red);
 
 	}
 }
 
-int Menu::getPressedItem()
+void Menu::moveUpMenuPause()
 {
-	return selectedItemIndex;
+	if (selectedItemIndexPause - 1 >= 0)
+	{
+		menuPause[selectedItemIndexPause].setFillColor(sf::Color::White);
+		selectedItemIndexPause--;
+		menuPause[selectedItemIndexPause].setFillColor(sf::Color::Red);
+
+	}
+}
+
+void Menu::moveDownMenuPause()
+{
+	if (selectedItemIndexPause + 1 < 2)
+	{
+		menuPause[selectedItemIndexPause].setFillColor(sf::Color::White);
+		selectedItemIndexPause++;
+		menuPause[selectedItemIndexPause].setFillColor(sf::Color::Red);
+	}
+
+}
+
+int Menu::getPressedItemMenuMain()
+{
+	return selectedItemIndexMenu;
+}
+
+int Menu::getPressedItemMenuPause()
+{
+	return selectedItemIndexPause;
 }

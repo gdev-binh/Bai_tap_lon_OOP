@@ -4,21 +4,30 @@
 class Menu
 {
 private:
-	int selectedItemIndex = 0;
+	int selectedItemIndexMenu = 0;
+	int selectedItemIndexPause = 0;
+
 	sf::Font font;
-	sf::Text menu[3];
+	sf::Text menuMain[3];
+	sf::Text menuPause[2];
 
 public:
 	Menu(float width, float height);
 	~Menu();
 
-	void drawMenu(sf::RenderWindow &window);
+	void drawMenuMain(sf::RenderWindow &window);
+	void drawMenuPause(sf::RenderWindow& window);
 
-	void moveUp();
-	void moveDown();
+	void moveUpMenuMain();
+	void moveDownMenuMain();
+
+	void moveUpMenuPause();
+	void moveDownMenuPause();
 
 
-	int getPressedItem(); // lay vi option con` chon.
+	int getPressedItemMenuMain(); // lay vi tri option con` chon.
+
+	int getPressedItemMenuPause(); // lay vi tri option con` chon.
 
 
 
