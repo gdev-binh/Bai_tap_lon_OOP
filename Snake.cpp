@@ -34,8 +34,6 @@ void Snake::drawSnake(sf::RenderWindow& window)
 			S_blue.setPosition(snake_part[i].x * 32, snake_part[i].y * 32);
 			window.draw(S_blue);
 		}
-
-
 	}
 
 }
@@ -61,17 +59,6 @@ void Snake::snakeMove()
 		snake_part[0].x += 1;
 	if (dir == UP)
 		snake_part[0].y -= 1;
-
-	// kiem tra chay vuot bien 
-	if (snake_part[0].x >= 17) // vuot qua bien phai
-		snake_part[0].x = 1;
-	if (snake_part[0].x < 1)	// vuot qua bien trai
-		snake_part[0].x = 16;
-	if (snake_part[0].y >= 18) // vuot qua bien duoi
-		snake_part[0].y = 3;
-	if (snake_part[0].y < 3)	// vuot qua bien tren
-		snake_part[0].y = 17;
-
 }
 
 void Snake::grow()
@@ -90,12 +77,7 @@ bool Snake::checkFoodEqualSnake(Food food) // kiem tra ran trung voi food
 		}
 	}
 	return true;
-
-
 }
-
-
-
 
 int Snake::getSnakeSize()
 {
@@ -110,5 +92,19 @@ float Snake::getSnakePositionX(int i)
 float Snake::getSnakePositionY(int i)
 {
 	return snake_part[i].y;
+}
+
+bool Snake::checkSnakeDie()
+{ // van bi loi
+	// kiem tra chay vuot bien 
+	if (snake_part[0].x >= 17) // vuot qua bien phai
+		return true;
+	if (snake_part[0].x <= 0)	// vuot qua bien trai
+		return true;
+	if (snake_part[0].y >= 18) // vuot qua bien duoi
+		return true;
+	if (snake_part[0].y <= 2)	// vuot qua bien tren
+		return true;
+	return false;
 }
 

@@ -22,17 +22,29 @@ Menu::Menu(float width, float height)
 	menuMain[2].setString("Exit");
 	menuMain[2].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 3));
 
+	// Continue when pause
 	menuPause[0].setFont(font);
 	menuPause[0].setFillColor(sf::Color::Red);
 	menuPause[0].setString("Continue play");
 	menuPause[0].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 1));
 
+	// Return to the main menu of State Pause
 	menuPause[1].setFont(font);
 	menuPause[1].setFillColor(sf::Color::White);
-	menuPause[1].setString("Return to the main menu");
+	menuPause[1].setString("Return main menu");
 	menuPause[1].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 2));
 
-	selectedItemIndexMenu = 0;
+	// Restart when die
+	menuRestart[0].setFont(font);
+	menuRestart[0].setFillColor(sf::Color::Red);
+	menuRestart[0].setString("Restart");
+	menuRestart[0].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 1));
+	
+	// Return to the main menu of State Die
+	menuRestart[1].setFont(font);
+	menuRestart[1].setFillColor(sf::Color::White);
+	menuRestart[1].setString("Return main menu");
+	menuRestart[1].setPosition(sf::Vector2f(width / 2, height / (3 + 1) * 2));
 }
 
 Menu::~Menu()
@@ -54,6 +66,12 @@ void Menu::drawMenuPause(sf::RenderWindow& window)
 
 }
 
+void Menu::drawMenuRestart(sf::RenderWindow& window)
+{
+	window.draw(menuRestart[0]);
+	window.draw(menuRestart[1]);
+}
+
 void Menu::moveUpMenuMain()
 {
 	if (selectedItemIndexMenu - 1 >= 0)
@@ -61,7 +79,6 @@ void Menu::moveUpMenuMain()
 		menuMain[selectedItemIndexMenu].setFillColor(sf::Color::White);
 		selectedItemIndexMenu--;
 		menuMain[selectedItemIndexMenu].setFillColor(sf::Color::Red);
-
 	}
 
 
@@ -100,6 +117,27 @@ void Menu::moveDownMenuPause()
 
 }
 
+void Menu::moveUpMenuRestart()
+{
+	if (selectedItemIndexRestart - 1 >= 0)
+	{
+		menuRestart[selectedItemIndexRestart].setFillColor(sf::Color::White);
+		selectedItemIndexRestart--;
+		menuRestart[selectedItemIndexRestart].setFillColor(sf::Color::Red);
+
+	}
+}
+
+void Menu::moveDownMenuRestart()
+{
+	if (selectedItemIndexRestart + 1 < 2)
+	{
+		menuRestart[selectedItemIndexRestart].setFillColor(sf::Color::White);
+		selectedItemIndexRestart++;
+		menuRestart[selectedItemIndexRestart].setFillColor(sf::Color::Red);
+	}
+}
+
 int Menu::getPressedItemMenuMain()
 {
 	return selectedItemIndexMenu;
@@ -108,4 +146,9 @@ int Menu::getPressedItemMenuMain()
 int Menu::getPressedItemMenuPause()
 {
 	return selectedItemIndexPause;
+}
+
+int Menu::getPressedItemMenuRestart()
+{
+	return selectedItemIndexRestart;
 }
