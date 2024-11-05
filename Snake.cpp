@@ -38,8 +38,17 @@ void Snake::drawSnake(sf::RenderWindow& window)
 
 }
 
+
+
 void Snake::setDirectionSnake(Direction newDir)
 {
+	if ((dir == UP && newDir == DOWN) ||
+		(dir == DOWN && newDir == UP) ||
+		(dir == RIGHT && newDir == LEFT) ||
+		(dir == LEFT && newDir == RIGHT))
+	{
+		return;
+	}
 	dir = newDir;
 }
 
@@ -51,6 +60,7 @@ void Snake::snakeMove()
 		snake_part[i] = snake_part[i - 1];
 
 	}
+
 	if (dir == DOWN)
 		snake_part[0].y += 1;
 	if (dir == LEFT)
@@ -105,6 +115,11 @@ bool Snake::checkSnakeDie()
 		return true;
 	if (snake_part[0].y <= 2)	// vuot qua bien tren
 		return true;
+	for (int i = 1; i < snake_part.size(); i++)
+	{
+		if (snake_part[0] == snake_part[i])
+			return true;
+	}
 	return false;
 }
 

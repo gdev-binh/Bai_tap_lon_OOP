@@ -238,7 +238,7 @@ int main()
 
         else if (state == PLAY) // khi da an Play
         {
-
+            // dieu khien 
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
                 snake.setDirectionSnake(DOWN);
