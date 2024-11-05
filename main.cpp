@@ -7,7 +7,7 @@
 int width_window = 18, height_window = 19; // kich thuoc cua window
 int sizeGrid = 32;
 
-enum GameState{MENU, PLAY, PAUSE, EXIT, CONFIRM_EXIT};
+enum GameState{MENU, PLAY, PAUSE, EXIT, RESTART};
 
 int main()
 {
@@ -17,6 +17,7 @@ int main()
 
     Menu menu(window.getSize().x, window.getSize().y);
     GameState state = MENU;
+
 
     Snake snake; // khoi tao snake
     Food  food; // khoi tao food
@@ -84,9 +85,11 @@ int main()
 
     // khoi tao viewGame tao mac dinh khung hinh`
     sf::View viewGame(sf::FloatRect(0, 0, 18 * 32, 19 * 32));
+    bool checkDie = false;
 
     while (window.isOpen())
     {
+
         // khoi tao time
         float time = clock.getElapsedTime().asSeconds();
         clock.restart();
@@ -97,7 +100,6 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-
             // khi thay doi kich thuoc cua so
             if (event.type == sf::Event::Resized)
             { // khi maximize thi` khong bi. dan~ pixel            
@@ -117,62 +119,126 @@ int main()
                 window.setView(viewGame);
 
             }
-            // menu
+            // STATE MENU
             if (state == MENU)
             {
                 if (event.type == sf::Event::KeyPressed)
                 {
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                        menu.moveUp();
+                        menu.moveUpMenuMain();
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                        menu.moveDown();
+                        menu.moveDownMenuMain();
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
                     {
-                        if (menu.getPressedItem() == 0)
+                        if (menu.getPressedItemMenuMain() == 0)
                         {
                             std::cout << "PLAY HAD CHOOSE" << std::endl;
                             state = PLAY;
                         }
 
-                        if (menu.getPressedItem() == 1)
+                        if (menu.getPressedItemMenuMain() == 1)
                             std::cout << "SETTINGS HAD CHOOSE" << std::endl;
-                        if (menu.getPressedItem() == 2)
+                        if (menu.getPressedItemMenuMain() == 2)
                         {
                             std::cout << "EXIT HAD CHOOSE" << std::endl;
                             window.close();
                         }
+                    }                
+                }
+            }
+            // STATE PAUSE
+            if (state == PAUSE)
+            {
+                if (event.type == sf::Event::KeyPressed)
+                {
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                        menu.moveUpMenuPause();
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                        menu.moveDownMenuPause();
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+                    {
+                        if (menu.getPressedItemMenuPause() == 0)
+                        {
+                            std::cout << "CONTINUE HAD CHOOSE" << std::endl;
+                            state = PLAY;
+                        }
+                        if (menu.getPressedItemMenuPause() == 1)
+                        {
+                            std::cout << "RETURN HAD CHOOSE" << std::endl;
+                            state = MENU;
+
+                        }
 
                     }
-                
                 }
-               
-
             }
-             if (state == PLAY && event.type == sf::Event::KeyPressed)
-             { 
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-                {
-                            
-                    std::cout << "Escapes has choosen!!" << std::endl;
-                    state = MENU;
-                    snake = Snake();
-                    score = 0;
-                    food = Food();
-                }
+            // STATE PLAY
+             if (state == PLAY)
+             {
+                 if (event.type == sf::Event::KeyPressed)
+                 {
+                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                     {
+                         state = PAUSE;
+                         std::cout << "Pause has choosen!!" << std::endl;
+                     }
+                 }
              }
+             // STATE RESTART
+             if (state == RESTART && event.type == sf::Event::KeyPressed)
+             {
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                     menu.moveUpMenuRestart();
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                     menu.moveDownMenuRestart();
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+                 {
+                     if (menu.getPressedItemMenuRestart() == 0)
+                     {
+                         std::cout << "RESTART HAD CHOOSE" << std::endl;
+                         state = PLAY;
+                         score = 0;
+                         snake = Snake();
+                         food = Food();
+                         checkDie = false;
+                     }
+                     if (menu.getPressedItemMenuRestart() == 1)
+                     {
+                         std::cout << "RETURN MAIN MENU" << std::endl;
+                         state = MENU;
 
+                     }
 
+                 }
+             }
+      
         }
         window.clear();
 
         if (state == MENU) // con` o menu
         {
-            menu.drawMenu(window);
+            snake = Snake();
+            score = 0;
+            food = Food();
+            checkDie = false;
+            window.draw(S_khung_vien);
+            menu.drawMenuMain(window);
 
+        }
+        else if (state == PAUSE)
+        {
+            
+            menu.drawMenuPause(window);
+        }
+        else if (state == RESTART)
+        {
+            
+            menu.drawMenuRestart(window);
         }
 
         else if (state == PLAY) // khi da an Play
         {
+
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
                 snake.setDirectionSnake(DOWN);
@@ -193,6 +259,18 @@ int main()
             {
                 timer = 0;
                 snake.snakeMove();
+
+                // check snake die
+
+                if (snake.checkSnakeDie())
+                {
+                    checkDie = true;
+                }
+                if (checkDie)
+                {
+                    state = RESTART;
+                    std::cout << "You died" << std::endl;
+                }
 
                 // check snake eat food
                 if (snake.getSnakePositionX(0) == food.getPositionFoodX() &&
@@ -268,7 +346,7 @@ int main()
             text_record.setString(ss_record.str());
             window.draw(text_record);
 
-            snake.drawSnake(window);
+            snake.drawSnake(window); // ve lai 
             food.drawFood(window);   // ve food moi ( new respawn )
         }
 

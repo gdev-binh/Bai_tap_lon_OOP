@@ -27,7 +27,6 @@ public:
 	float getSnakePositionX(int i);
 	float getSnakePositionY(int i);
 
-
-
+	bool checkSnakeDie();
 };
 
