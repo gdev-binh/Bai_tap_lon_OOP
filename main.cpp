@@ -411,7 +411,8 @@ int main()
             snake.drawSnake(window); // ve lai 
             food.drawFood(window);   // ve food moi ( new respawn )
         }
-        window.draw(sSpeakerMute);
+        window.draw(sSpeaker);
+
         window.draw(sMusic);
 
         window.display();
