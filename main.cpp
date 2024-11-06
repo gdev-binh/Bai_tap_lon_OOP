@@ -188,7 +188,7 @@ int main()
                 {
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
                         menu.moveUpMenuPause();
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
                         menu.moveDownMenuPause();
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
                     {
@@ -278,10 +278,6 @@ int main()
             sf::Sprite icon_food(tFood);
             icon_food.setPosition(9 * 32, 32 * 4);
             window.draw(icon_food);
-
-           
-        
-
             std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
           
             ss_record << record;
