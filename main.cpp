@@ -79,17 +79,25 @@ int main()
     sCup.setPosition(96, 16);
 
     
-
+    // hinh` anh? loa
     sf::Texture tSpeaker, tSpeakerMute;
     tSpeaker.loadFromFile("images/speaker.png");
     tSpeakerMute.loadFromFile("images/speaker-mute.png");
+
     sf::Sprite sSpeaker(tSpeaker); 
+    sSpeaker.setPosition(15 * 32, 16);
     sf::Sprite sSpeakerMute(tSpeakerMute);
+    sSpeakerMute.setPosition(15 * 32, 16);
 
-
+    // hinh anh? am nhac
     sf::Texture tMusic, tMusicMute;
-    tMusic.loadFromFile("images/icon-music.png");
+    tMusic.loadFromFile("images/music-icon.png");
+    tMusicMute.loadFromFile("images/icon-music-mute.png");
+    
     sf::Sprite sMusic(tMusic);
+    sMusic.setPosition(13 * 32, 16);
+    sf::Sprite sMusicMute(tMusicMute);
+    sMusicMute.setPosition(13 * 32, 16);
 
 
     // khoi tao clock
@@ -180,7 +188,7 @@ int main()
                 {
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
                         menu.moveUpMenuPause();
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
                         menu.moveDownMenuPause();
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
                     {
@@ -270,10 +278,6 @@ int main()
             sf::Sprite icon_food(tFood);
             icon_food.setPosition(9 * 32, 32 * 4);
             window.draw(icon_food);
-
-           
-        
-
             std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
           
             ss_record << record;
@@ -408,6 +412,7 @@ int main()
             food.drawFood(window);   // ve food moi ( new respawn )
         }
         window.draw(sSpeakerMute);
+        window.draw(sMusic);
 
         window.display();
     }
