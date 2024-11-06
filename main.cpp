@@ -220,9 +220,9 @@ int main()
             snake = Snake();
             score = 0;
             food = Food();
-            checkDie = false;
-            window.draw(S_khung_vien);
+            checkDie = false;       
             menu.drawMenuMain(window);
+           
 
         }
         else if (state == PAUSE)
@@ -232,8 +232,36 @@ int main()
         }
         else if (state == RESTART)
         {
-            
             menu.drawMenuRestart(window);
+
+            // ve diem sau khi chet va
+            sf::Sprite icon_cup(tCup);
+            icon_cup.setPosition(9*32, 32 *2 );
+            window.draw(icon_cup);
+
+
+            sf::Sprite icon_food(tFood);
+            icon_food.setPosition(9 * 32, 32 * 4);
+            window.draw(icon_food);
+
+           
+        
+
+            std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
+         
+            ss_record << record;
+            text_record.setString(ss_record.str());
+            text_record.setPosition(11 * 32, 32 * 2);
+
+            window.draw(text_record);
+            
+            ss_score << score;
+            text_score.setString(ss_score.str());
+            text_score.setPosition(11*32, 32*4);
+            window.draw(text_score);
+
+
+
         }
 
         else if (state == PLAY) // khi da an Play
@@ -338,12 +366,14 @@ int main()
             std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
             ss_score << score;
             text_score.setString(ss_score.str());
+            text_score.setPosition(64, 20);
             window.draw(text_score);
 
             // ve ~icon cup
             window.draw(sCup);
             ss_record << record;
             text_record.setString(ss_record.str());
+            text_record.setPosition(140, 20);
             window.draw(text_record);
 
             snake.drawSnake(window); // ve lai 
