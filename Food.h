@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include<vector>
 #include <time.h>
 #include<cstdlib> // thu vien dung` ham` rand()

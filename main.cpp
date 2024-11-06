@@ -78,9 +78,36 @@ int main()
     sf::Sprite sCup(tCup);
     sCup.setPosition(96, 16);
 
+    
+
+    sf::Texture tSpeaker, tSpeakerMute;
+    tSpeaker.loadFromFile("images/speaker.png");
+    tSpeakerMute.loadFromFile("images/speaker-mute.png");
+    sf::Sprite sSpeaker(tSpeaker); 
+    sf::Sprite sSpeakerMute(tSpeakerMute);
+
+
+    sf::Texture tMusic, tMusicMute;
+    tMusic.loadFromFile("images/icon-music.png");
+    sf::Sprite sMusic(tMusic);
+
+
     // khoi tao clock
     sf::Clock clock;
     float timer = 0, delay = 0.1;
+
+   //  khoi tao bien load file music 
+    sf::SoundBuffer eat;
+    eat.loadFromFile("eat.wav");
+
+    sf::Sound eatSound;
+    eatSound.setBuffer(eat);
+    eatSound.setVolume(30);
+    
+    sf::Music music;
+    music.openFromFile("musicBackground.wav");
+    music.play();
+    music.setLoop(true);
 
 
     // khoi tao viewGame tao mac dinh khung hinh`
@@ -248,7 +275,7 @@ int main()
         
 
             std::stringstream ss_score, ss_record; // tao chuoi tu kieu du lieu int
-         
+          
             ss_record << record;
             text_record.setString(ss_record.str());
             text_record.setPosition(11 * 32, 32 * 2);
@@ -304,6 +331,7 @@ int main()
                 if (snake.getSnakePositionX(0) == food.getPositionFoodX() &&
                     snake.getSnakePositionY(0) == food.getPositionFoodY())
                 {
+                    eatSound.play();
                     score++;
                     if (score > record)
                         record = score;
@@ -379,6 +407,7 @@ int main()
             snake.drawSnake(window); // ve lai 
             food.drawFood(window);   // ve food moi ( new respawn )
         }
+        window.draw(sSpeakerMute);
 
         window.display();
     }
