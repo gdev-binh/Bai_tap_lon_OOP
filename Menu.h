@@ -39,5 +39,7 @@ public:
 
 	int getPressedItemMenuRestart();
 
+
+	bool isMenuClick(sf::Vector2f& mousePos);
 };
 

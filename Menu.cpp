@@ -6,7 +6,6 @@ Menu::Menu(float width, float height)
 
 	// anh ne`n
 
-
 	
 	// play
 	menuMain[0].setFont(font);
@@ -210,4 +209,9 @@ int Menu::getPressedItemMenuPause()
 int Menu::getPressedItemMenuRestart()
 {
 	return selectedItemIndexRestart;
+}
+
+bool Menu::isMenuClick(sf::Vector2f& mousePos)
+{
+	return menuMain[0].getGlobalBounds().contains(mousePos);
 }

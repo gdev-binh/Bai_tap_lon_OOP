@@ -1,7 +1,6 @@
 #include"Snake.h"
-#include"Food.h"
 #include"Menu.h"
-
+#include"Button.h"
 #include<sstream>
 
 int width_window = 18, height_window = 19; // kich thuoc cua window
@@ -117,10 +116,16 @@ int main()
     music.play();
     music.setLoop(true);
 
-
+    
     // khoi tao viewGame tao mac dinh khung hinh`
     sf::View viewGame(sf::FloatRect(0, 0, 18 * 32, 19 * 32));
     bool checkDie = false;
+
+    // khoi tao cac nut
+    Button playButton(250, 160, 200, 50, "Play");
+    Button settingsButton(250, 200, 200, 50, "Settings");   
+    Button speakerButton(15 * 32, 16, 32, 32, ""); bool turnSpeaker = true;
+    Button musicButton(13 * 32, 16, 32, 32, "");   bool turnMusic = true;
 
     while (window.isOpen())
     {
@@ -133,6 +138,42 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
+            // kiem tra nhap chuot
+            if (event.type == sf::Event::MouseButtonPressed)
+            {
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    // lay vi tri con chuot trong cua so?
+                    sf::Vector2f mousePos = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
+                    if (playButton.isClicked(mousePos))
+                    {
+                        
+                        std::cout << "Play button clicked !\n";
+                    }
+                    if (musicButton.isClicked(mousePos))
+                    {
+                        std::cout << "Music button clicked !\n";
+                        if (turnMusic)
+                        {                        
+                            music.play();
+                        }
+
+                        else
+                        {
+                            music.pause();
+                        }         
+                        turnMusic = !turnMusic;
+                    }
+                    if (speakerButton.isClicked(mousePos))
+                    {
+                        std::cout << "Speaker button clicked !\n";
+                    }
+    
+                }
+            }
+
+
+
             if (event.type == sf::Event::Closed)
                 window.close();
             // khi thay doi kich thuoc cua so
@@ -248,6 +289,8 @@ int main()
              }
       
         }
+        // ket thuc while (open)
+
         window.clear();
 
         if (state == MENU) // con` o menu
@@ -257,12 +300,12 @@ int main()
             food = Food();
             checkDie = false;       
             menu.drawMenuMain(window);
+            playButton.drawButton(window);
+            settingsButton.drawButton(window);
            
-
         }
         else if (state == PAUSE)
-        {
-            
+        {        
             menu.drawMenuPause(window);
         }
         else if (state == RESTART)
@@ -412,10 +455,12 @@ int main()
             food.drawFood(window);   // ve food moi ( new respawn )
         }
         window.draw(sSpeaker);
+        speakerButton.drawButton(window);
 
         window.draw(sMusic);
-
+        musicButton.drawButton(window);
         window.display();
     }
+
     return 0;
 }
