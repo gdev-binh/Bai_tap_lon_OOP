@@ -39,7 +39,7 @@ void Snake::drawSnake(sf::RenderWindow& window)
 }
 
 
-
+// set huong di chuyen
 void Snake::setDirectionSnake(Direction newDir)
 {
 	if ((dir == UP && newDir == DOWN) ||
@@ -54,21 +54,31 @@ void Snake::setDirectionSnake(Direction newDir)
 
 void Snake::snakeMove()
 {
-	Food f;
 	for (int i = snake_part.size() - 1; i > 0; --i)
 	{	// snake.size() la` ham lay so luong phan tu 
 		snake_part[i] = snake_part[i - 1];
-
 	}
 
 	if (dir == DOWN)
+	{
 		snake_part[0].y += 1;
-	if (dir == LEFT)
+		return;
+	}
+	else if (dir == LEFT)
+	{
 		snake_part[0].x -= 1;
-	if (dir == RIGHT)
+		return;
+	}
+	else if (dir == RIGHT)
+	{
 		snake_part[0].x += 1;
-	if (dir == UP)
+		return;
+	}
+	else if (dir == UP)
+	{
 		snake_part[0].y -= 1;
+		return;
+	}
 }
 
 void Snake::grow()

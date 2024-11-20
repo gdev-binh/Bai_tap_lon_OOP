@@ -12,7 +12,7 @@ private:
 public:
 
 	Button(float x, float y, float width, float height,const std::string& buttonText );
-
+	~Button();
 	void drawButton(sf::RenderWindow& window);
 	bool isClicked(sf::Vector2f& mousePos);
 
