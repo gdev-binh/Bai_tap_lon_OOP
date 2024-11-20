@@ -6,7 +6,7 @@
 int width_window = 18, height_window = 19; // kich thuoc cua window
 int sizeGrid = 32;
 
-enum GameState{MENU, PLAY, PAUSE, EXIT, RESTART};
+enum GameState{MENU, PLAY, PAUSE, EXIT, RESTART, SETTING};
 
 int main()
 {
@@ -101,7 +101,8 @@ int main()
 
     // khoi tao clock
     sf::Clock clock;
-    float timer = 0, delay = 0.1;
+    float timer = 0, delay = 0.12; // mac dinh la` 0.12
+
 
    //  khoi tao bien load file music 
     sf::SoundBuffer eat;
@@ -122,10 +123,17 @@ int main()
     bool checkDie = false;
 
     // khoi tao cac nut
-    Button playButton(250, 160, 200, 50, "Play");
-    Button settingsButton(250, 200, 200, 50, "Settings");   
     Button speakerButton(15 * 32, 16, 32, 32, ""); bool turnSpeaker = true;
     Button musicButton(13 * 32, 16, 32, 32, "");   bool turnMusic = true;
+    
+    // cac nut state menu
+    Button playButton(250, 160, 200, 50, "Play");
+    Button settingsButton(250, 312, 200, 50, "Settings");
+    Button exitButton(250, 462, 200, 50, "Exit");
+
+    // cac nut state pause
+    //Button continueButton()
+    
 
     while (window.isOpen())
     {
@@ -145,35 +153,52 @@ int main()
                 {
                     // lay vi tri con chuot trong cua so?
                     sf::Vector2f mousePos = window.mapPixelToCoords({ event.mouseButton.x, event.mouseButton.y });
-                    if (playButton.isClicked(mousePos))
+                    // click nut play
+                    if (state == MENU)
                     {
-                        
-                        std::cout << "Play button clicked !\n";
-                    }
-                    if (musicButton.isClicked(mousePos))
-                    {
-                        std::cout << "Music button clicked !\n";
-                        if (turnMusic)
-                        {                        
-                            music.play();
+                        if (playButton.isClicked(mousePos))
+                        {
+                            std::cout << "Play button clicked !\n";
+                            state = PLAY;
+                        }
+                        // click nut setting
+                        if (settingsButton.isClicked(mousePos))
+                        {
+                            std::cout << "Setting button clicked !\n";
+                            state = SETTING;
+                        }
+                        // click nut thoat
+                        if (exitButton.isClicked(mousePos))
+                        {
+                            std::cout << "Exit button clicked !\n";
+                            window.close();
                         }
 
-                        else
-                        {
-                            music.pause();
-                        }         
+                    }                       
+                    // click nut nhac
+                    if (musicButton.isClicked(mousePos))
+                    {
                         turnMusic = !turnMusic;
+                        std::cout << "Music button clicked !\n";
+                        if (turnMusic)
+                            music.play();
+                        else
+                            music.pause();
                     }
+                    // click nut am thanh 
                     if (speakerButton.isClicked(mousePos))
                     {
+                        turnSpeaker = !turnSpeaker;
                         std::cout << "Speaker button clicked !\n";
+                        if (turnSpeaker)
+
+                            eatSound.play();
+                        else
+                            eatSound.stop();
                     }
     
                 }
             }
-
-
-
             if (event.type == sf::Event::Closed)
                 window.close();
             // khi thay doi kich thuoc cua so
@@ -213,7 +238,11 @@ int main()
                         }
 
                         if (menu.getPressedItemMenuMain() == 1)
+                        {
                             std::cout << "SETTINGS HAD CHOOSE" << std::endl;
+                            state = SETTING;
+                        }
+
                         if (menu.getPressedItemMenuMain() == 2)
                         {
                             std::cout << "EXIT HAD CHOOSE" << std::endl;
@@ -287,6 +316,39 @@ int main()
 
                  }
              }
+             if (state == SETTING && event.type == sf::Event::KeyPressed)
+             {
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                     menu.moveUpMenuSetting();
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                     menu.moveDownMenuSetting();
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return))
+                 {
+                     if (menu.getPressedItemMenuSetting() == 0)
+                     {
+                         std::cout << "EASY MODE HAD CHOOSE" << std::endl;
+                         delay = 0.2;
+                     }
+
+                     if (menu.getPressedItemMenuSetting() == 1)
+                     {
+                         std::cout << "MEDIUM MODE HAD CHOOSE" << std::endl;
+                         delay = 0.12;
+                     }
+
+                     if (menu.getPressedItemMenuSetting() == 2)
+                     {
+                         std::cout << "HARD MODE HAD CHOOSE" << std::endl;
+                         delay = 0.07;
+                     }
+                 }
+                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace) ||
+                     sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                 {
+                     state = MENU;
+                 }
+             }
+
       
         }
         // ket thuc while (open)
@@ -302,6 +364,7 @@ int main()
             menu.drawMenuMain(window);
             playButton.drawButton(window);
             settingsButton.drawButton(window);
+            exitButton.drawButton(window);
            
         }
         else if (state == PAUSE)
@@ -337,7 +400,10 @@ int main()
 
 
         }
-
+        else if (state == SETTING)
+        {
+            menu.drawMenuSetting(window);
+        }
         else if (state == PLAY) // khi da an Play
         {
             // dieu khien 
@@ -345,15 +411,15 @@ int main()
             {
                 snake.setDirectionSnake(DOWN);
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
                 snake.setDirectionSnake(LEFT);
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
                 snake.setDirectionSnake(RIGHT);
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             {
                 snake.setDirectionSnake(UP);
             }
@@ -378,7 +444,8 @@ int main()
                 if (snake.getSnakePositionX(0) == food.getPositionFoodX() &&
                     snake.getSnakePositionY(0) == food.getPositionFoodY())
                 {
-                    eatSound.play();
+                    if(turnSpeaker)
+                        eatSound.play();
                     score++;
                     if (score > record)
                         record = score;
@@ -461,6 +528,5 @@ int main()
         musicButton.drawButton(window);
         window.display();
     }
-
     return 0;
 }
